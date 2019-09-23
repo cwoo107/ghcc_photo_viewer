@@ -68,7 +68,10 @@
         <div v-for="image in info" :key='image'>
           <v-col class="shrink">
             
-              <img :src="image.image.thumb.url" >
+              
+              <a  :href="image.image.url" target="_blank" download >
+                <img :src="image.image.thumb.url" />
+              </a>
             
           </v-col>
           </div>
@@ -114,6 +117,19 @@
       .get('https://ghcc-photos.herokuapp.com/albums.json').then(response => (this.list = response.data),axios .get('https://ghcc-photos.herokuapp.com/album_attachments.json?album_id='+this.$route.params.id+'')
       .then(response => (this.info = response.data)))
       
+  },
+  methods: {
+  downloadItem (url) {
+    Axios.get(url, { responseType: 'blob' })
+      .then(({ data }) => {
+        const blob = new Blob([data], { type: 'image/jpeg' })
+        let link = document.createElement('a')
+        link.href = window.URL.createObjectURL(blob)
+        link.download = 'Download.jpg'
+        link.click()
+      .catch(error => console.error(error))
+    })
   }
+}
   }
 </script>
